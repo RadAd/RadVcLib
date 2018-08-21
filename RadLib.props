@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="Common.tasks" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <rad_lib_imported>true</rad_lib_imported>
+    <rad_lib_cached_dir>$(MSBuildThisFileDirectory)Cached\</rad_lib_cached_dir>
+    <rad_lib_installed_dir>$(MSBuildThisFileDirectory)Installed\</rad_lib_installed_dir>
+  </PropertyGroup>
+
+  <Target Name="MakeRadLibDir" Outputs="$(rad_lib_cached_dir);$(rad_lib_installed_dir)">
+    <MakeDir Directories="$(rad_lib_cached_dir);$(rad_lib_installed_dir)"/> 
+  </Target>
+  
+  <Target Name="Download">
+  </Target>
+
+  <Target Name="Extract">
+  </Target>
+
+  <Target Name="Update" DependsOnTargets="Download;Extract">
+  </Target>
+
+  <Target Name="RadLib_CopyFiles" AfterTargets="Build">
+  </Target>
+  
+  <Target Name="Details">
+    <Message Text="Details:" />
+    <Message Text="  Configuration: $(Configuration)" />
+    <Message Text="  Platform: $(Platform)" />
+    <Message Text="  TargetDir: $(TargetDir)" />
+  </Target>
+</Project>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="RadLib.props" Condition="'$(rad_lib_imported)' == ''" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <glm_version>0.9.9.0</glm_version>
+    <glm_zip>glm-$(glm_version).zip</glm_zip>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <glm_local_zip>$(rad_lib_cached_dir)$(glm_zip)</glm_local_zip>
+    <glm_dir>$(rad_lib_installed_dir)glm\</glm_dir>
+    <glm_base_dir>$(glm_dir)glm\</glm_base_dir>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <sfml_include_dir>$(glm_base_dir)</sfml_include_dir>
+    <sfml_lib_dir>$(glm_base_dir)lib\</sfml_lib_dir>
+    <sfml_bin_dir>$(glm_base_dir)bin\</sfml_bin_dir>
+  </PropertyGroup>
+  
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(sfml_include_dir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  
+  <Target Name="Download" Outputs="$(glm_local_zip)" DependsOnTargets="MakeRadLibDir" AfterTargets="Download">
+    <DownloadFile Address="https://github.com/g-truc/glm/releases/download/$(glm_version)/$(glm_zip)" FileName="$(glm_local_zip)" />
+  </Target>
+
+  <Target Name="Extract" Inputs="$(glm_local_zip)" Outputs="$(glm_dir)" DependsOnTargets="MakeRadLibDir" AfterTargets="Extract">
+    <UnzipFile FileName="$(glm_local_zip)" Root="$(glm_dir)" />
+  </Target>
+
+  <Target Name="Update" DependsOnTargets="Download;Extract">
+  </Target>
+
+  <Target Name="glm_Details" AfterTargets="Details">
+    <Message Text="  glm_zip: $(glm_zip)" />
+    <Message Text="  glm_base_dir: $(glm_base_dir)" />
+    <Message Text="  glm_base_dir: $(glm_base_dir)" />
+  </Target>
+</Project>

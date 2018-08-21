@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="RadLib.props" Condition="'$(rad_lib_imported)' == ''" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <raylib_version>2.0.0</raylib_version>
+    <raylib_32_zip>raylib-$(raylib_version)-Win32-msvc15.zip</raylib_32_zip>
+    <raylib_64_zip>raylib-$(raylib_version)-Win64-msvc15.zip</raylib_64_zip>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <raylib_32_local_zip>$(rad_lib_cached_dir)$(raylib_32_zip)</raylib_32_local_zip>
+    <raylib_32_dir>$(rad_lib_installed_dir)raylib\32\</raylib_32_dir>
+    <raylib_base_dir_32>$(raylib_32_dir)raylib-$(raylib_version)-Win32-msvc15\</raylib_base_dir_32>
+    <raylib_64_local_zip>$(rad_lib_cached_dir)$(raylib_64_zip)</raylib_64_local_zip>
+    <raylib_64_dir>$(rad_lib_installed_dir)raylib\64\</raylib_64_dir>
+    <raylib_base_dir_64>$(raylib_64_dir)raylib-$(raylib_version)-Win64-msvc15\</raylib_base_dir_64>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Platform)'=='Win32'">
+    <raylib_include_dir>$(raylib_base_dir_32)include\</raylib_include_dir>
+    <raylib_lib_dir>$(raylib_base_dir_32)lib\</raylib_lib_dir>
+    <raylib_bin_dir>$(raylib_base_dir_32)lib\</raylib_bin_dir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x64'">
+    <raylib_include_dir>$(raylib_base_dir_64)include\</raylib_include_dir>
+    <raylib_lib_dir>$(raylib_base_dir_64)lib\</raylib_lib_dir>
+    <raylib_bin_dir>$(raylib_base_dir_64)lib\</raylib_bin_dir>
+  </PropertyGroup>
+  <PropertyGroup>
+    <raylib_lib_files>raylib.lib</raylib_lib_files>
+  </PropertyGroup>
+  <ItemGroup>
+    <raylib_dll_files Include="$(raylib_bin_dir)raylib_shared.dll" />
+  </ItemGroup>
+  
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(raylib_include_dir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(raylib_lib_dir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  
+  <ItemDefinitionGroup>
+    <Link>
+      <AdditionalDependencies>$(raylib_lib_files);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  
+  <Target Name="RayLib_CopyFiles" AfterTargets="RadLib_CopyFiles">
+    <Copy SourceFiles="@(raylib_dll_files)" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true"/>
+  </Target>
+  
+  <Target Name="RayLib_Download32" Outputs="$(raylib_32_local_zip)" DependsOnTargets="MakeRadLibDir" AfterTargets="Download">
+    <DownloadFile Address="https://github.com/raysan5/raylib/releases/download/$(raylib_version)/$(raylib_32_zip)" FileName="$(raylib_32_local_zip)" />
+  </Target>
+
+  <Target Name="RayLib_Extract32" Inputs="$(raylib_32_local_zip)" Outputs="$(raylib_32_dir)" DependsOnTargets="MakeRadLibDir" AfterTargets="Extract">
+    <UnzipFile FileName="$(raylib_32_local_zip)" Root="$(raylib_32_dir)" />
+  </Target>
+
+  <Target Name="RayLib_Download64" Outputs="$(raylib_64_local_zip)" DependsOnTargets="MakeRadLibDir" AfterTargets="Download">
+    <DownloadFile Address="https://github.com/raysan5/raylib/releases/download/$(raylib_version)/$(raylib_64_zip)" FileName="$(raylib_64_local_zip)" />
+  </Target>
+
+  <Target Name="RayLib_Extract64" Inputs="$(raylib_64_local_zip)" Outputs="$(raylib_64_dir)" DependsOnTargets="MakeRadLibDir" AfterTargets="Extract">
+    <UnzipFile FileName="$(raylib_64_local_zip)" Root="$(raylib_64_dir)" />
+  </Target>
+
+  <Target Name="RayLib_Details" AfterTargets="Details">
+    <Message Text="  raylib_include_dir: $(raylib_include_dir)" />
+    <Message Text="  raylib_lib_files: $(raylib_lib_files)" />
+    <Message Text="  raylib_dll_files: @(raylib_dll_files)" />
+    <Message Text="  raylib_64_zip: $(raylib_64_zip)" />
+    <Message Text="  raylib_base_dir_32: $(raylib_base_dir_32)" />
+    <Message Text="  raylib_base_dir_64: $(raylib_base_dir_64)" />
+  </Target>
+</Project>

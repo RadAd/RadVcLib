@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="RadLib.props" Condition="'$(rad_lib_imported)' == ''" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <sfml_version>2.5.0</sfml_version>
+    <sfml_32_zip>SFML-$(sfml_version)-windows-vc15-32-bit.zip</sfml_32_zip>
+    <sfml_64_zip>SFML-$(sfml_version)-windows-vc15-64-bit.zip</sfml_64_zip>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <sfml_32_local_zip>$(rad_lib_cached_dir)$(sfml_32_zip)</sfml_32_local_zip>
+    <sfml_32_dir>$(rad_lib_installed_dir)SFML\32\</sfml_32_dir>
+    <sfml_base_dir_32>$(sfml_32_dir)SFML-$(sfml_version)\</sfml_base_dir_32>
+    <sfml_64_local_zip>$(rad_lib_cached_dir)$(sfml_64_zip)</sfml_64_local_zip>
+    <sfml_64_dir>$(rad_lib_installed_dir)SFML\64\</sfml_64_dir>
+    <sfml_base_dir_64>$(sfml_64_dir)SFML-$(sfml_version)\</sfml_base_dir_64>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Platform)'=='Win32'">
+    <sfml_include_dir>$(sfml_base_dir_32)include\</sfml_include_dir>
+    <sfml_lib_dir>$(sfml_base_dir_32)lib\</sfml_lib_dir>
+    <sfml_bin_dir>$(sfml_base_dir_32)bin\</sfml_bin_dir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x64'">
+    <sfml_include_dir>$(sfml_base_dir_64)include\</sfml_include_dir>
+    <sfml_lib_dir>$(sfml_base_dir_64)lib\</sfml_lib_dir>
+    <sfml_bin_dir>$(sfml_base_dir_64)bin\</sfml_bin_dir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <sfml_lib_files>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib</sfml_lib_files>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(Configuration)'=='Debug'">
+    <sfml_dll_files Include="$(sfml_bin_dir)sfml-graphics-d-2.dll;$(sfml_bin_dir)sfml-window-d-2.dll;$(sfml_bin_dir)sfml-system-d-2.dll" />
+  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <sfml_lib_files>sfml-graphics.lib;sfml-window.lib;sfml-system.lib</sfml_lib_files>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(Configuration)'=='Release'">
+    <sfml_dll_files Include="$(sfml_bin_dir)sfml-graphics-2.dll;$(sfml_bin_dir)sfml-window-2.dll;$(sfml_bin_dir)sfml-system-2.dll" />
+  </ItemGroup>
+  
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(sfml_include_dir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(sfml_lib_dir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  
+  <ItemDefinitionGroup>
+    <Link>
+      <AdditionalDependencies>$(sfml_lib_files);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  
+  <Target Name="sfml_CopyFiles" AfterTargets="RadLib_CopyFiles">
+    <Copy SourceFiles="@(sfml_dll_files)" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true"/>
+  </Target>
+  
+  <Target Name="sfml_Download32" Outputs="$(sfml_32_local_zip)" DependsOnTargets="MakeRadLibDir" AfterTargets="Download">
+    <DownloadFile Address="https://www.sfml-dev.org/files/$(sfml_32_zip)" FileName="$(sfml_32_local_zip)" />
+  </Target>
+
+  <Target Name="sfml_Extract32" Inputs="$(sfml_32_local_zip)" Outputs="$(sfml_32_dir)" DependsOnTargets="MakeRadLibDir" AfterTargets="Extract">
+    <UnzipFile FileName="$(sfml_32_local_zip)" Root="$(sfml_32_dir)" />
+  </Target>
+
+  <Target Name="sfml_Download64" Outputs="$(sfml_64_local_zip)" DependsOnTargets="MakeRadLibDir" AfterTargets="Download">
+    <DownloadFile Address="https://www.sfml-dev.org/files/$(sfml_64_zip)" FileName="$(sfml_64_local_zip)" />
+  </Target>
+
+  <Target Name="sfml_Extract64" Inputs="$(sfml_64_local_zip)" Outputs="$(sfml_64_dir)" DependsOnTargets="MakeRadLibDir" AfterTargets="Extract">
+    <UnzipFile FileName="$(sfml_64_local_zip)" Root="$(sfml_64_dir)" />
+  </Target>
+
+  <Target Name="sfml_Details" AfterTargets="Details">
+    <Message Text="  sfml_lib_files: $(sfml_lib_files)" />
+    <Message Text="  sfml_dll_files: @(sfml_dll_files)" />
+    <Message Text="  sfml_32_zip: $(sfml_32_zip)" />
+    <Message Text="  sfml_64_zip: $(sfml_64_zip)" />
+    <Message Text="  sfml_base_dir_32: $(sfml_base_dir_32)" />
+    <Message Text="  sfml_base_dir_64: $(sfml_base_dir_64)" />
+  </Target>
+</Project>
