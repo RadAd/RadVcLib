@@ -3,9 +3,9 @@ Overview
 
 RadVcLib is collection of properties to make it easy to add a library to your project.
 
-The propery includes targets to download and extract a zip file from the library's official website.
+The property file includes targets to download and extract a zip file from the library's official website.
 
-The property file also setup the include directory, library directory and libraries necessary to build your project.
+The property file also sets up the include directory, library directory and libraries necessary to build your project.
 
 Finally, the property file also copies the required dlls to your projects output directory.
 
