@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="RadLib.props" Condition="'$(rad_lib_imported)' == ''" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <irrlicht_version>1.8.4</irrlicht_version>
+    <irrlicht_zip>irrlicht-$(irrlicht_version).zip</irrlicht_zip>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <irrlicht_local_zip>$(rad_lib_cached_dir)$(irrlicht_zip)</irrlicht_local_zip>
+    <irrlicht_dir>$(rad_lib_installed_dir)irrlicht\irrlicht-$(irrlicht_version)\</irrlicht_dir>
+    <irrlicht_base_dir>$(irrlicht_dir)</irrlicht_base_dir>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Platform)'=='Win32'">
+    <irrlicht_include_dir>$(irrlicht_base_dir)include\</irrlicht_include_dir>
+    <irrlicht_lib_dir>$(irrlicht_base_dir)lib\Win32-visualstudio\</irrlicht_lib_dir>
+    <irrlicht_bin_dir>$(irrlicht_base_dir)bin\Win32-visualstudio\</irrlicht_bin_dir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x64'">
+    <irrlicht_include_dir>$(irrlicht_base_dir)include\</irrlicht_include_dir>
+    <irrlicht_lib_dir>$(irrlicht_base_dir)lib\Win64-visualstudio\</irrlicht_lib_dir>
+    <irrlicht_bin_dir>$(irrlicht_base_dir)bin\Win64-visualstudio\</irrlicht_bin_dir>
+  </PropertyGroup>
+  <PropertyGroup>
+    <irrlicht_lib_files>irrlicht.lib</irrlicht_lib_files>
+  </PropertyGroup>
+  <ItemGroup>
+    <irrlicht_dll_files Include="$(irrlicht_bin_dir)Irrlicht.dll" />
+  </ItemGroup>
+  
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(irrlicht_include_dir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(irrlicht_lib_dir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  
+  <ItemDefinitionGroup>
+    <Link>
+      <AdditionalDependencies>$(irrlicht_lib_files);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  
+  <Target Name="irrlicht_CopyFiles" AfterTargets="RadLib_CopyFiles">
+    <Copy SourceFiles="@(irrlicht_dll_files)" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true"/>
+  </Target>
+  
+  <Target Name="irrlicht_Download" Outputs="$(irrlicht_local_zip)" DependsOnTargets="MakeRadLibDir" AfterTargets="Download">
+    <DownloadFile Address="http://downloads.sourceforge.net/irrlicht/$(irrlicht_zip)" FileName="$(irrlicht_local_zip)" />
+  </Target>
+
+  <Target Name="irrlicht_Extract" Inputs="$(irrlicht_local_zip)" Outputs="$(irrlicht_dir)" DependsOnTargets="MakeRadLibDir" AfterTargets="Extract">
+    <UnzipFile FileName="$(irrlicht_local_zip)" Root="$(irrlicht_dir)" />
+  </Target>
+
+  <Target Name="irrlicht_Details" AfterTargets="Details">
+    <Message Text="  irrlicht_include_dir: $(irrlicht_include_dir)" />
+    <Message Text="  irrlicht_lib_files: $(irrlicht_lib_files)" />
+    <Message Text="  irrlicht_dll_files: @(irrlicht_dll_files)" />
+    <Message Text="  irrlicht_zip: $(irrlicht_zip)" />
+    <Message Text="  irrlicht_base_dir: $(irrlicht_base_dir)" />
+  </Target>
+</Project>
