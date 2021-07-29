@@ -3,7 +3,7 @@
   <Import Project="RadLib.props" Condition="'$(rad_lib_imported)' == ''" />
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
-    <raylib_version>3.5.0</raylib_version>
+    <raylib_version>3.7.0</raylib_version>
     <raylib_32_zip>raylib-$(raylib_version)_win32_msvc16.zip</raylib_32_zip>
     <raylib_64_zip>raylib-$(raylib_version)_win64_msvc16.zip</raylib_64_zip>
   </PropertyGroup>
