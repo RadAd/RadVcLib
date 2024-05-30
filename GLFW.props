@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="RadLib.props" Condition="'$(rad_lib_imported)' == ''" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <glfw_version>3.4</glfw_version>
+    <glfw_32_zip>glfw-$(glfw_version).bin.WIN32.zip</glfw_32_zip>
+    <glfw_64_zip>glfw-$(glfw_version).bin.WIN64.zip</glfw_64_zip>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <glfw_32_local_zip>$(rad_lib_cached_dir)$(glfw_32_zip)</glfw_32_local_zip>
+    <glfw_32_dir>$(rad_lib_installed_dir)glfw\32\</glfw_32_dir>
+    <glfw_base_dir_32>$(glfw_32_dir)glfw-$(glfw_version).bin.WIN32\</glfw_base_dir_32>
+    <glfw_64_local_zip>$(rad_lib_cached_dir)$(glfw_64_zip)</glfw_64_local_zip>
+    <glfw_64_dir>$(rad_lib_installed_dir)glfw\64\</glfw_64_dir>
+    <glfw_base_dir_64>$(glfw_64_dir)glfw-$(glfw_version).bin.WIN64\</glfw_base_dir_64>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Platform)'=='Win32'">
+    <glfw_include_dir>$(glfw_base_dir_32)include\</glfw_include_dir>
+    <glfw_lib_dir>$(glfw_base_dir_32)lib-vc2022\</glfw_lib_dir>
+    <glfw_bin_dir>$(glfw_base_dir_32)lib-vc2022\</glfw_bin_dir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x64'">
+    <glfw_include_dir>$(glfw_base_dir_64)include\</glfw_include_dir>
+    <glfw_lib_dir>$(glfw_base_dir_64)lib-vc2022\</glfw_lib_dir>
+    <glfw_bin_dir>$(glfw_base_dir_64)lib-vc2022\</glfw_bin_dir>
+  </PropertyGroup>
+  <PropertyGroup>
+    <glfw_lib_files>glfw3dll.lib</glfw_lib_files>
+  </PropertyGroup>
+  <ItemGroup>
+    <glfw_dll_files Include="$(glfw_bin_dir)glfw3.dll" />
+  </ItemGroup>
+  
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(glfw_include_dir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(glfw_lib_dir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  
+  <ItemDefinitionGroup>
+    <Link>
+      <AdditionalDependencies>$(glfw_lib_files);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  
+  <Target Name="glfw_CopyFiles" AfterTargets="RadLib_CopyFiles">
+    <Copy SourceFiles="@(glfw_dll_files)" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true"/>
+  </Target>
+  
+  <Target Name="glfw_Download32" Outputs="$(glfw_32_local_zip)" DependsOnTargets="MakeRadLibDir" AfterTargets="Download">
+    <DownloadFile Address="https://github.com/glfw/glfw/releases/download/$(glfw_version)/$(glfw_32_zip)" FileName="$(glfw_32_local_zip)" />
+  </Target>
+
+  <Target Name="glfw_Extract32" Inputs="$(glfw_32_local_zip)" Outputs="$(glfw_32_dir)" DependsOnTargets="MakeRadLibDir" AfterTargets="Extract">
+    <UnzipFile FileName="$(glfw_32_local_zip)" Root="$(glfw_32_dir)" />
+  </Target>
+
+  <Target Name="glfw_Download64" Outputs="$(glfw_64_local_zip)" DependsOnTargets="MakeRadLibDir" AfterTargets="Download">
+    <DownloadFile Address="https://github.com/glfw/glfw/releases/download/$(glfw_version)/$(glfw_64_zip)" FileName="$(glfw_64_local_zip)" />
+  </Target>
+
+  <Target Name="glfw_Extract64" Inputs="$(glfw_64_local_zip)" Outputs="$(glfw_64_dir)" DependsOnTargets="MakeRadLibDir" AfterTargets="Extract">
+    <UnzipFile FileName="$(glfw_64_local_zip)" Root="$(glfw_64_dir)" />
+  </Target>
+
+  <Target Name="glfw_Details" AfterTargets="Details">
+    <Message Text="  glfw_include_dir: $(glfw_include_dir)" />
+    <Message Text="  glfw_lib_files: $(glfw_lib_files)" />
+    <Message Text="  glfw_dll_files: @(glfw_dll_files)" />
+    <Message Text="  glfw_64_zip: $(glfw_64_zip)" />
+    <Message Text="  glfw_base_dir_32: $(glfw_base_dir_32)" />
+    <Message Text="  glfw_base_dir_64: $(glfw_base_dir_64)" />
+  </Target>
+</Project>
